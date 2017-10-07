@@ -28,6 +28,26 @@ a.index:hover {
     background-color:blue;
 }
 
+a.member {
+    font-family: Hiragino, Meiryo, sans-serif;
+    text-decoration: none;
+}
+
+a.member:link { 
+    font-family: Hiragino, Meiryo, sans-serif;
+    color: black; 
+}
+a.member:visited { 
+    font-family: Hiragino, Meiryo, sans-serif;
+    color: black;
+}
+
+a.member:hover { 
+    font-family: Hiragino, Meiryo, sans-serif;
+    color: white;
+    background-color:blue;
+}
+
 h1 {
     font-family: Hiragino, Meiryo, sans-serif;
     font-weight: bold; 
