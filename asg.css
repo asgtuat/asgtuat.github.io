@@ -10,19 +10,36 @@ li.index {
 }
 
 a.index {
+    font-family: Hiragino, Meiryo, sans-serif;
     text-decoration: none;
 }
 
-a.index:link { color: blue; 
+a.index:link { 
+    font-family: Hiragino, Meiryo, sans-serif;
+    color: blue; 
 }
-a.index:visited { color: blue; }
+a.index:visited { 
+    font-family: Hiragino, Meiryo, sans-serif;
+    color: blue; }
 
-a.index:hover { color: white;
-	  background-color:blue;
+a.index:hover { 
+    font-family: Hiragino, Meiryo, sans-serif;
+    color: white;
+    background-color:blue;
 }
 
 h1 {
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: Hiragino, Meiryo, sans-serif;
+    font-weight: bold; 
+}
+
+h3 {
+    font-family: Hiragino, Meiryo, sans-serif;
+    font-weight: bold; 
+}
+
+b.news {
+    font-family: Hiragino, Meiryo, sans-serif;
     font-weight: bold; 
 }
 
@@ -46,9 +63,9 @@ span.awardname {
     width:6em;
 }
 
-#intro .p {
-	font-family: Arial,Helvetica,sans-serif;
-	font-size: 1em;
+p {
+    font-family: Hiragino, Meiryo, sans-serif;
+    font-size: 1em;
 }
 
 #people .degree,
@@ -62,7 +79,6 @@ span.awardname {
 
     background-color: white;
     color: black;
-    font-family: "Roboto Condensed", sans-serif;
 
     user-select: none;
     pointer-events: none;
