@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="us">
+  <head>
+    <meta charset="utf-8">
+    <title>Hiroshi Yamada</title>
+    <link rel="stylesheet" type="text/css" href="asg.css">
+  </head>
+  <body>
+    
+    <table align="center" width="1000px">
+      <tr><td>
+	  <h1>山田 浩史</h1>
+	  <hr color="blue">
+	  
+	  <hr color="blue">
+	  <h2>職歴</h2>
+	  <ul>
+	    <li><span class="career">2012年10月〜:</span> 東京農工大学大学院工学研究院先端情報科学部門 准教授 </li>
+	    <li><span class="career">2012年8月〜2012年9月:</span> デューク大学訪問研究員</li>
+	    <li><span class="career">2009年4月〜2012年9月:</span> 慶應義塾大学大学院理工学研究科 特任助教</li>
+	  </ul>
+
+	  <hr color="blue">
+	  <h2>学歴</h2>
+	  <ul>
+	    <li>2009年3月: 慶應義塾大学大学院理工学研究科開放環境科学専攻 修了</li>
+	    <li>2006年3月: 電気通信大学大学院電気通信学研究科情報工学専攻 修了</li>
+	    <li>2004年3月: 電気通信大学電気通信学部情報工学科 卒業</li>
+	  </ul>
+
+	  <hr color="blue">
+	  <h2>受賞</h2>
+	  <ul>
+	    <li>論文賞(情報処理学会，2013 年)</li>
+	    <li>論文賞(情報処理学会，2010 年)</li>
+	    <li>論文賞(情報処理学会，2009 年)</li>
+	    <li>IPSJ Digital Courier 船井若手奨励賞 (船井情報科学振興財団，2009 年)</li>
+	    <li>山下記念賞 (情報処理学会，2008 年)</li>
+	    <li>IPSJ Digital Courier 船井若手奨励賞 (船井情報科学振興財団，2008 年)</li>
+	    <li>最優秀学生発表賞 (情報処理学会 OS 研究会，2007 年)</li>
+	    <li>目黒会賞 (電気通信大学，2006 年)</li>
+	  </ul>
+
+	  <hr color="blue">
+	  <h2>指導した学生さんの受賞</h2>
+	  <ul>
+	    <li><span class="awardtitle">企業賞 Fujitsu 賞</span> <span class="awardname">佐藤克矢</span> WebDB Forum 2017, 2017</li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">寺田献</span> IPSJ 第141回OS研究会, 2017</li>
+	    <li><span class="awardtitle">コンピュータサイエンス領域賞</span> <span class="awardname">小林直登</span> IPSJ 2017</li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">清水祐太郎</span> IPSJ 第140回OS研究会, 2017</li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">中嶋将人</span> IPSJ 第139回OS研究会, 2017</li>
+	    <li><span class="awardtitle">コンピュータサイエンス領域賞</span> <span class="awardname">尾板弘嵩</span> IPSJ, 2016 </li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">小林直登</span> IPSJ ComSys 2016, 2016</li>
+	    <li><span class="awardtitle">学生奨励賞</span> <span class="awardname">高橋祥平</span> WebDB Forum 2016, 2016</li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">寺田献</span> IPSJ 第136回OS研究会, 2016</li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">尾板弘嵩</span> IPSJ 第135回OS研究会, 2015</li>
+	    <li><span class="awardtitle">コンピュータサイエンス領域賞</span> <span class="awardname">福地開帆</span> IPSJ, 2015 </li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">小林直登</span> IPSJ 第133回OS研究会, 2015</li>
+	    <li><span class="awardtitle">山下記念研究賞</span> <span class="awardname">鈴木勇介</span> IPSJ, 2014 </li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">福地開帆</span> IPSJ 第129回OS研究会, 2014</li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">古藤明音</span> IPSJ 第128回OS研究会, 2014</li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">鈴木勇介</span> IPSJ 第125回OS研究会, 2013</li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">吉村剛</span> IPSJ 第121回OS研究会, 2012</li>
+	    <li><span class="awardtitle">最優秀学生発表賞</span> <span class="awardname">本橋剛</span> IPSJ 第112回OS研究会, 2009</li>
+	  </ul>	  
+	 <hr color="blue">
+	 <h2>学会活動</h2>
+	  <ul>
+	    <li>情報処理学会 OS 研究会 幹事 2014 年度〜</li>
+	    <li>情報処理学会若手研究者の会 メンバー 2013 年度〜</li>
+	    <li>情報処理学会プログラミングシンポジウム 幹事 2013 年度〜</li>
+	    <li>日本ソフトウェア科学会ディペンダブルシステム研究会(DSW) 幹事 2013 年度 〜</li>
+	    <li>情報処理学会論文誌コンピューティングシステム編集委員 2015 年度 〜</li>
+	    <li>電子情報通信学会・システムソサエアティ英文論文誌編集委員 2015 年度〜</li>
+	  </ul>	  
+	  
+	  <ul>
+	    <li>The 24th IEEE Int'l Conf. on Embedded and Real-Time Computing Systems and Applications (RTCSA '18), Financial chair</li>
+	    <li>The 6th ACM SIGOPS Asia-Pacific Workshop on Systems (APSys '15), Local arrangement chair</li>
+	    <li>The 21st IEEE Pacific Rim Int'l Symp. on Dependable Computing (PRDC '15), Publicity co-chairs</li>
+	    <li>Int'l Workshop on Software Aging and Rejuvenation (WoSAR), Program Committee 2013〜</li>
+	  </ul>	
+
+	  <ul>
+	    <li>日本ソフトウェア科学会ディペンダブルシステム研究会(DSW) 幹事 2013 年度 〜2015 年度</li>
+	    <li>情報処理学会若手研究者の会 メンバー 2013 年度〜2015年度</li>
+	    <li>Annual Meeting on Advanced Computing Systems and Infrastructure (ACSI) プログラム委員 2015 年</li>
+	    <li>並列/分散/協調処理に関するワークショップ(SWoPP) 組織委員長 2015 年度</li>
+	    <li>並列/分散/協調処理に関するワークショップ(SWoPP) 組織副委員長 2014 年度</li>
+	    <li>並列/分散/協調処理に関するワークショップ(SWoPP) 組織委員 2013, 2016 年度</li>
+	    <li>先端的計算基盤システムシンポジウム (SACSIS) プログラム委員，2011 年〜2013 年</li>
+	    <li>コンピュータシステムシンポジウム (ComSys) プログラム委員，2009 年〜2013 年</li>
+	    <li>情報処理学会 OS 研究会 運営委員 2010 年度〜2013年度</li>
+	    <li>情報処理学会 OS 研究会 幹事補佐 2013 年度</li>
+	  </ul>
+
+	 <hr color="blue">
+	 <h2>招待講演</h2>
+	 <ul>
+	   <li> Rebuttal for the talk against “Full Virtualization for GPUs Reconsidered”, 14th Annual Workshop on Duplicating, Deconstructing and Debunking (WDDD ’17), co-located with the 44th Int’l Symp. On Computer Architecture (ISCA’17), Jun., 2017</li>
+	   <li> OSコミュニティ視点からのビッグデータ基盤技術，ビッグデータ基盤技術の潮流，パネリスト，2017年IEICE総合大会，2017年3月. </li>
+	   <li>高信頼・高利便なクラウド環境を実現する基盤システムソフトウェア
+	     (ビッグデータ基盤の完成に向けて，パネリスト，第 159 回 DBS，第 115 回 IFAT 合同研究会, 2014 年 8 月)</li>
+	   <li>システムソフトウェアにおける "再生" 技術，
+	     (第 8 回再生可能集積システム時限研究会，2013 年 10 月)</li>
+	   <li>Traveling Forward in Time to Newer Operating Systems using ShadowReboot，
+	     (特別招待講演，日本ソフトウェア科学会，2013 年 9 月)</li>
+	   <li>高信頼クラウド環境を目指して 〜システムソフトウェアからのアプローチ〜，
+	     (九州大学 Sysmte LSI Lab., 2012 年 8 月)</li>
+	   <li>先端技術を "応用" するシステムソフトウェア研究，
+	     (慶應義塾大学 SFC CI セミナー，2011 年 11 月)</li>
+	   <li>大規模計算処理環境を支えるシステムソフトウェア技術，
+	     (日本応用数理学会 2011 年度年会，2011 年 9 月)</li>
+	   <li>面倒くさがりが切り開くシステムソフトウェアの研究，
+	     (ここがグレイト ! こんなに使える私の研究，パネリスト，BoF セッション，SWoPP 2008，2008 年 8 月)</li>
+	   <li>FoxyTechnique: 仮想マシン技術を用いた OS の資源管理ポリシーの変更，
+	     (第 9 回仮想化技術勉強会，2007 年 6 月)</li>
+	 </ul>
