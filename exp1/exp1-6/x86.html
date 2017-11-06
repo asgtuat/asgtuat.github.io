@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>第 6 回情報工学実験</title>
+    <link rel="stylesheet" type="text/css" href="./asg.css">
+  </head>
+  <body>
+    
+    <table align="center" width="1000px">
+
+      <tr><td>
+	  
+	  <h1>第 6 回情報工学実験 1</h1>
+	  
+	  <div>
+	    <p>本課題の目的は，プログラムがどのようにコンピュータ上で動作しているか，および広く利用されている x86 のアセンブラに触れ，実機上でプログラムがどのように動作しているかを理解し，実感することである．これまで C 言語のプログラミングや計算機アーキテクチャなどの講義で，コンピュータ上でのプログラムの動作イメージをぼんやりと掴んでいるかもしれない．本課題では，プログラムがどのようにメモリ上に展開され，それらを CPU がどのように実行しているか，そのイメージをよりはっきりさせる．たとえば，再帰関数がコンピュータ上でどのように実行されているか，局所変数，大域変数がメモリ上にどのように配備されているか，を具体的に知る．本実験を通して，これまで学んできたプログラムとコンピュータの動作原理とが結びつけ，コンピュータが全体の動作理解の一助となれば幸いである．</p>
+	  </div>
+	  <br>
+	  <ul>
+	      <li class="index"><a class="index" href="index.html">説明(プログラムの動き)</li>
+	      <li class="index">説明(x86)</li>
+	      <li class="index"><a class="index" href="slide.html">説明スライド</li>
+	      <li class="index"><a class="index" href="assignment.html">課題</a></li>
+	      <li class="index"><a class="index" href="submit.html">レポートの提出</a></li>
+	    </ul>
+	      <br><hr color="blue">
+
+	  <h2>Case Study: x86</h2>
+	  <p>これから x86 の命令セットを題材として，実際のコンピュータ上でどのようにプログラムが動作しているのかを見ていく．ここまでで，コンピュータ上でのプログラムの動作を概観してきたが，x86 上で動作するプログラムも例外なくこの概観に則した動きをする．x86 は CISC に分類され，Intel や AMD の CPU やそれをサポートしている．x86 互換 CPU の市場シェアは絶大で，ハイエンドなサーバマシンをはじめ，組み込み機器，皆が使っているラップトップやデスクトップ PC，EDEN のマシンなども例外なく x86 の命令セットが動作する CPU を搭載している．</p>
+	  
+	  <p>次に x86 互換 CPU のレジスタ，命令セットを掻い摘んで紹介していく．すべてを紹介，解説しようとすると全セマスタが終わってしまうので，ここではプログラムの動作原理を理解する上で必要なもののみに焦点を当てる．
+	  </p>
+	  
+	  <h2>レジスタ</h2>
+	  <p>汎用レジスタは 16 個あり，主たるものを取り上げて説明する．歴史的に名前と役割がなんとなく決まっているものの，
+	    特に気にせず使うことが多い．RAX，RBP，RSP などは以下の用途で利用されることが一般的である．</p>
+	  <ul>
+	    <li><b>RAX(アキュームレータ):</b> 演算結果や関数の返り値などを格納する．</li><br>
+	    <li><b>RBP(ベースポインタ):</b> スタック内の領域を指す．</li><br>
+	    <li><b>RSP(スタックポインタ):</b> スタックの先頭を指す．</li><br>
+	    <li><b>RBX(ベース):</b> データ領域のポインタとして利用される．</li><br>
+	    <li><b>RCX(カウンタ):</b> ループのカウンタとして利用される．</li><br>
+	    <li><b>RDX(データ):</b> 演算やデータの一時退避場所として利用される．</li><br>
+	    <li><b>R8〜R15:</b> 上記レジスタが足りないときに利用される．</li> 
+	  </ul>
+
+	  <p>昔の名残から，各レジスタはそれぞれ 32 bit，16 bit，8 bit のレジスタとしてアクセスすることができる．32 bit で
+	  演算をするときのみ，上位 32 bit は 0 クリアされ，他の場合は値がそのまま保持される．</p>
+
+	  <center>
+	    <img src="./fig6.png" width="30%">
+	  </center>
+
+	  <h2>命令</h2>
+	  <p>x86 はシンプルな命令から複雑怪奇な命令まで色々とサポートされている．ここでは，代表的な命令について紹介する．ここでのアセンブラは gcc -S で得られる<b> GNUアセンブラ </b> に即している．たとえば，オペランドを()でくくるとアドレス(アドレスを示すオペランドは最大4個のパラメータを取ることができ，ディスプレイスメント(ベースレジスタ, オフセットレジスタ, スケーラ)の形式をとる)，転送先を最後に記述するといったルールがある．</p>
+
+	  <h3>データ転送命令</h3>
+	  <p>プログラムでいうと代入を実現する命令である．x86 では<b>MOV 命令</b>がサポートされており，広く使われる．レジスタ，直接アドレス，即値，間接アドレスなどが指定可能である．32 bit，64 bit の値を取り扱うときには，<b>movl</b> や <b>movq</b> を用いる．たとえば次のように使う．</p>
+
+	  <div class="code">
+	    <code>
+	      movl $100, %eax     /* eax = 100 */ <br>
+	      movl -4(%rbp), %eax /* eax = *(rbp - 4) */ <br>
+	      movl %eax, 8(%rbp)  /* (rbp + 8) = eax */<br>
+	    </code>
+	  </div>
+	  
+	  <h3>算術命令</h3>
+	  <p>一通りの演算がそろっている．四則演算に対しては <b>add，sub，imul, idiv</b> がある．1 を加減算する命令の<b>inc</b>, <b>dec</b>もある．MOV 命令と同様，演算対象の bit 幅に応じて「l」や「q」を最後にくっつけた命令(e.g. addl, subq)を用いる．</p>
+
+	  <div class="code">
+	    <code>
+	      addl $10, -4(%rbp)     /* (rbp - 4) += 10 */ <br>
+	      imul -8(%rbp), %eax /* eax *= *(rbp - 8) */ <br>
+	      subq $16, %rsp) /* rsp -= 16 */<br>
+	    </code>
+	  </div>
+
+	  <h3>分岐/比較命令</h3>
+	  <p>指定したアドレスにプログラムカウンタを設定する<b>JMP命令</b>がサポートされている．他にも，後述する比較命令の結果に応じてジャンプするかを決める条件分岐命令もある．</p>
+
+	  <center>
+	  <table border="1">
+	    <tr>
+	      <th>命令</th>
+	      <th>説明</th>
+	    </tr>
+	    <tr>
+	      <td>jmp &lt;ラベル&gt;</td>
+	      <td>無条件に&lt;ラベル&gt;で示す行へ移動</td>
+	    </tr>
+	    <tr>
+	      <td>ja &lt;ラベル&gt;</td>
+	      <td>(A &gt;    B)のとき&lt;ラベル&gt;で示す行へ移動</td>
+	    </tr>
+	    <tr>
+	      <td>jae &lt;ラベル&gt;</td>
+	      <td>(A &gt;=    B)のとき&lt;ラベル&gt;で示す行へ移動</td>
+	    </tr>
+	    <tr>
+	      <td>jb &lt;ラベル&gt;</td>
+	      <td>(A &lt;    B)のとき&lt;ラベル&gt;で示す行へ移動</td>
+	    </tr>
+	    <tr>
+	      <td>jbe &lt;ラベル&gt;</td>
+	      <td>(A &lt;=    B)のとき&lt;ラベル&gt;で示す行へ移動</td>
+	    </tr>
+	    <tr>
+	      <td>jnz &lt;ラベル&gt;</td>
+	      <td>(A !=    B)のとき&lt;ラベル&gt;で示す行へ移動</td>
+	    </tr>
+	    <tr>
+	      <td>jne &lt;ラベル&gt;</td>
+	      <td>(A !=    B)のとき&lt;ラベル&gt;で示す行へ移動</td>
+	    </tr>
+	    <tr>
+	      <td>jz &lt;ラベル&gt;</td>
+	      <td>(A ==    B)のとき&lt;ラベル&gt;で示す行へ移動</td>
+	    </tr>
+	    <tr>
+	      <td>je &lt;ラベル&gt;</td>
+	      <td>(A ==    B)のとき&lt;ラベル&gt;で示す行へ移動</td>
+	    </tr>
+	    <tr>
+	      <td>loop &lt;ラベル&gt;</td>
+	      <td>cx レジスタの値が0のとき&lt;ラベル&gt;に移動</td>
+	    </tr>
+	  </table>
+	  </center>
+
+	  <p>比較命令として<b>CMP命令</b>が用意されている．2 つのオペランドを比較して，フラグレジスタの値を変更する．x86 のフラグレジスタは<b>RFLAGS(EFLAGS)</b>といい，ゼロフラグやオーバーフローフラグなどが格納されている．</p>
+
+	  <p>関数呼び出しをサポートする<b>CALL命令</b>や<b>RET命令</b>，<b>LEAVE命令</b>がある．CALL命令は引数に関数のラベルをとり，自動的に戻りアドレスをスタックに退避する．RET命令は RSP レジスタが指している値を RIP にセットする．LEAVE命令は今の RBP の値を RSP にセットし，スタックの先頭の値を RBPに戻す．つまり，1.movq %rbp, %rsp 2.popq rbp の 2 命令分の役割を果たす命令である．</p>
+
+	  <h3>スタック操作の命令</h3>
+	  スタックに値を格納する，値を取り出す命令として <b>push</b> と <b>pop</b> がそれぞれサポートされている．push 命令は引数で与えれた値をスタックに格納する(RSP をマイナスし，RSP が指すアドレスに値を格納する)．Pop 命令はスタックの最上位にある値(RSP が指す値)を引数で与えられたレジスタ or アドレスに格納する(RSP をプラスし，スタックの位置を変更する)．
+
+	  <div class="code">
+	    <code>
+	      pushq %eax /* スタックに eax レジスタの値を push． rsp--． */ <br>
+	      popq %rbp /* rsp が指している値を rbp に格納．rsp++． */ <br>
+	    </code>
+	  </div>
+	  
+	  <h3>その他</h3>
+	  <p>他にも論理演算やシフト演算用の命令がサポートされている．多くの場合，名前で挙動が推測できる．適宜，マニュアルを見ながらその機能を確かめて欲しい．</p>
+
+
+	  <h2>プログラムのアセンブラを見てみよう</h2>
+	  <p>次の<a href="./program/sample4.c">プログラム</a>のアセンブラを見てみる．gcc に -S オプションをつけると，拡張子が「s」のファイルが生成され，コンパイルしたプログラムのアセンブラが記述されたファイルが生成される．1 から 10 までの和を計算するプログラムである．
+	  </p>
+
+	  <center>
+	  <table>
+	    <tr>
+	      <td>
+	    <div class="code">
+		<pre>
+		<code>
+  1    int main(void)
+  2    {
+  3        int a, i;
+  4
+  5        a = 0;
+  6        for (i = 1; i < 11; i++)
+  7            a = a + i;
+  8
+  9        return 0;
+10    }
+		</code>
+		</pre>
+		</div>
+	      </td>
+	      <td>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		</td>
+	      <td>
+		<div class="code">
+		<pre>
+		  <code>
+ 1 main:
+ 2 .LFB0:
+ 3        pushq   %rbp
+ 4        movq    %rsp, %rbp
+ 5        movl    $0, -8(%rbp)
+ 6        movl    $1, -4(%rbp)
+ 7        jmp     .L2
+ 8 .L3:
+ 9        movl    -4(%rbp), %eax
+10        addl    %eax, -8(%rbp)
+11        addl    $1, -4(%rbp)
+12 .L2:
+13        cmpl    $10, -4(%rbp)
+14        jle     .L3
+15        movl    $0, %eax
+16        popq    %rbp
+17        ret
+		  </code>
+		</pre>
+</div>
+	      </td>
+	    </tr>
+	  </table>
+	  </center>
+
+	  <p> スタックの様子を図に示す．main: の冒頭でスタックフレームを作成している．ベースポインタをスタックに退避に，今のスタックポインタの値をベースポインタに格納する．5, 6 行目でスタック上に 0 の値を代入している．これが a と i に 0 を代入していることに相当する．7行目から 14 行目までが for 文に当たるアセンブラコードである．その後，EAX(RAX の 32 bit バージョン)に main の返り値を入れて，main を呼んだ関数へ戻っていく．
+</p>
+
+	  <center>
+	    <img src="./fig7.png" width="50%">
+	  </center>
+
+	  <p>別の例を見る．以下の<a href="./program/sample5.c">プログラム</a>は，2 つ引数をとり，大きい値を返す max() を呼んでいる．</p>
+
+	  <center>
+	    <table>
+	      <tr>
+		<td>
+		  <div class="code">
+		  <pre>
+		  <code>
+ 1	int max(int a, int b)
+ 2	{
+ 3		int ret;
+ 4
+ 5		if (a < b) ret = b;
+ 6		else       ret = a;
+ 7
+ 8		return ret;
+ 9	}
+10
+11	int main()
+12	{
+13		int a;
+14
+15		a = max(10, 100);
+16
+17		return 0;
+18	}
+			</code>
+		</pre>
+		  </div>
+	      </td>
+	      <td>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		</td>
+	      <td>
+
+<div class="code">
+		<pre>
+		  <code>
+max:
+.LFB0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movl	%edi, -20(%rbp)
+	movl	%esi, -24(%rbp)
+	movl	-20(%rbp), %eax
+	cmpl	-24(%rbp), %eax
+	jge	.L2
+	movl	-24(%rbp), %eax
+	movl	%eax, -4(%rbp)
+	jmp	.L3
+.L2:
+	movl	-20(%rbp), %eax
+	movl	%eax, -4(%rbp)
+.L3:
+	movl	-4(%rbp), %eax
+	popq	%rbp
+	ret
+
+main:
+.LFB1:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$16, %rsp
+	movl	$100, %esi
+	movl	$10, %edi
+	call	max
+	movl	%eax, -4(%rbp)
+	movl	$0, %eax
+	leave
+	ret
+		  </code>
+		</pre>
+</div>
+	      </td>
+	    </tr>
+	  </table>
+</center>
+
+	  <p>ここでスタックの様子を図に示す．call 命令で max 関数を呼び出す部分に着目する．RSP(スタックポインタ)をずらして，
+	    ESI, EDI レジスタに引数を入れて，max を呼び出す．max 関数では，引数をスタックに格納し，繰り返し文に制御に移る．その後，
+	    EAX に返り値を代入して，ret 命令で呼び出し元へと戻る．
+	  </p>
+
+	  <center>
+	    <img src="./fig8.png" width="60%">
+	  </center>
+
+	  <h2>スタックの破壊</h2>
+	  <p>プログラムが動作する上で，スタックが重要な役割を果たしていることがわかってきたかと思う．逆にいうと，スタックが変になると，プログラムの挙動が意図しないものになってしまう．スタック上の値を変えると，たとえば局所変数の値が突如変わってしまったり，関数終了時に呼び出し元に帰れなくなったりといった不具合が生じる．これを<b>スタック破壊</b>と呼ぶ．スタック破壊はプログラムのバグやネットワークからの攻撃によって発生する．攻撃では，スタックの値を巧妙に変更することで，プログラムを攻撃者の意図する挙動に変更するといった具合である．
+	  </p>
+
+	  <p>スタック破壊は簡単にできる．以下の<a href="./program/sample6.c">プログラム</a>が典型的な例である． </p>
+	  
+	  <div class="code">	 
+	  <pre>
+	    <code>
+  1    #include &ltstdio.h&gt
+  2
+  3    int main()
+  4    {
+  5        int a[10], b[10], i;
+  6
+  7        for (i = 0; i < 10; i++)
+  8            b[i] = 0;
+  9
+10        for (i = 0; i < 20; i++)
+11            a[i] = 1;
+12
+13        for (i = 0; i < 10; i++)
+14            printf("%d\n", b[i]);
+15
+16        return 0;
+17    }
+	    </code>
+	  </pre>
+	  </div>
+	  <p>上記プログラムが動作したときのスタックの様子を図に示す．局所変数が int 型の変数 i と配列 a[10], b[10]が定義されている．スタック上では図のように局所変数が割り当てられる．それぞれを初期化するルーチンがあり，誤って a の範囲を超えて繰り返し文を実行する．すると，a の範囲を超えて代入を繰り返すため，配列 b の領域に侵食して，その値を壊していく．実際にプログラムを作成し，値を出力させると内容の変化が確認できる．
+	  </p>
+
+	  <center>
+	    <img src="./fig9.png" width="70%">
+	  </center>

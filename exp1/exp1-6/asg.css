@@ -1,8 +1,8 @@
 li.index {
     display:inline;
     font-family: Hiragino, Meiryo, sans-serif;
-    margin:50px;
-    width: 20px;
+    margin:30px;
+    width: 10px;
 /*    padding: 20px 20px 20px 20px;*/
     height: 10px;
     font-size: large; 
@@ -52,7 +52,6 @@ a.member:hover {
 h1 {
     font-family: Hiragino, Meiryo, sans-serif;
     font-weight: bold; 
-
 }
 
 h3 {
@@ -83,6 +82,10 @@ span.awardtitle {
 span.awardname {
     display: inline-block;
     width:6em;
+}
+
+div.code {
+    background-color: #f0f0f0
 }
 
 p {
