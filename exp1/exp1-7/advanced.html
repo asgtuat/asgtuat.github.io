@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>第 7 回情報工学実験</title>
+    <link rel="stylesheet" type="text/css" href="./asg.css">
+  </head>
+  <body>
+    
+    <table align="center" width="1000px">
+
+      <tr><td>
+	  
+	  <h1>第 7 回情報工学実験 1</h1>
+	  
+	  <div>
+	    <p>本課題では，シェルスクリプトを理解を通じて，煩雑な処理を手軽に行うための技術を身につけることを目的とする．シェルスクリプトとは，シェル(コマンドを入力してオペレーティングシステムに指示を出すためのインターフェース．Linux でいうターミナル，Windows でいうコマンドプロンプト)で実行するコマンドを用いて記述されたプログラムを指す．シェルには，便利なコマンドが複数用意されており，これらを組み合わせ使うと，人手では煩雑で大変な仕事を簡単に行うことができる．たとえば，1,000 個のファイルから``Linux''という文字列を含む，ファイルサイズが 1 KB 以上のファイル名を列挙したり，CVS 形式の 10,000 個のファイルの第 2 要素が 100 以上の要素で構成される CVS を作成することが容易にできる．本課題を通して，コンピュータ上での作業を効率的に行う方法(楽する方法)を身につけ，生産性向上の一助となることを期待している．</p>
+	  </div>
+	  <br>
+	  <ul>
+	    <li class="index"><a class="index" href="index.html">説明(シェルスクリプトの基本)</li>
+	    <li class="index">説明(応用)</a></li>
+	    <li class="index"><a class="index" href="slide.html">説明スライド</a></li>
+	    <li class="index"><a class="index" href="assignment.html">課題</a></li>
+	    <li class="index"><a class="index" href="submit.html">レポートの提出</a></li>
+	  </ul>
+	  <br><hr color="blue">
+	  
+	  <h2>プログラミング言語の使い分け</h2>
+	  <p>これまでの情報工学実験1にて，特にスクリプト言語や正規表現，そして本日のシェルスクリプトの回を経て，煩雑かつ高度な処理を容易にコンピュータに任せられるという感覚を持ったと思う．実際に，これらを組み合わせることで，<b>簡易</b>にかつ<b>高度な処理</b>を実現できる．簡易さと高度さのバランスが重要であることに注意されたい．シェルスクリプトで実現できることは，C 言語でゴリゴリと記述すればできないことはない．コマンドの多く(ほとんど)は C 言語で実装されており，実質どのような機能でも実現できる．重要なのは，スクリプト言語やシェルスクリプトを用いることでそのような手間をスキップし，高度な処理を実現できるのがポイントである．同じ処理を実現するのであれば簡単な方がよい．ただ，シェルスクリプトでコンピュータにさせたい処理をすべて記述できるわけではない．そのときは，スクリプト言語を用いて必要な処理を実現するコマンドを用意する，またスクリプト言語でこと足りなければ Java や C 言語で所望のコマンドを用意すればよい．そして，シェルスクリプトでそのコマンドを呼び出すようにする．このように，用途に応じてプログラミング言語を使い分けることで，自身の生産性を高めることができる．</p>
+
+	  <h2>TIPS</h2>
+	  <p>多少のコツ</p>
+
+	  <h2>Case Study: プログラムの資源使用量の測定・可視化</h2>
+<p>それでは具体的なシチュエーションを想定して，各種スクリプトを作成する．今，プログラムの資源使用量の監視を行うケースを考える．資源使用量の監視は，そのマシンの性能評価や性能上のボトルネック発見，ハードウェア故障の早期発見などにとって，極めて有効な手段である．本来であれば，Web サーバや複雑なベンチマークを動作させ，その挙動を監視するのがよいが，今回は <b>grep</b> の挙動を監視する．grep コマンドは皆が知っているとおり，指定された文字列をファイルの中から検索するプログラムである．その挙動はファイルをディスクから読み込む，該当文字列を検索するといったように CPU とディスクに負荷をかけるため，システム系の分野ではしばしばベンチマークプログラム(システムの評価指標となるプログラム)として利用される．</p>
+
+<p>&nbsp;&nbsp; 今，grep コマンドの CPU 使用率とディスクアクセス量を取得することを考える．CPU 使用率とディスクアクセス量は，それぞれ <b>top</b> そして <b>vmstat</b> の両コマンドで取得できることが知られている．これらのコマンドを使って，grep の資源使用率を計測することとする．計測結果はあとで確認できるようファイルに保存する．その後，計測結果からグラフを作成し，時間経過で結果を可視化するところまで考える．今回は <b>gnuplot</b> と呼ばれるグラフ作成ソフトの使用を考える．この場合，どのようなスクリプトが必要となるであろうか．</p>
+
+<p>&nbsp;&nbsp; 必要なことは次のとおりである．これらを実現するスクリプトを作成すればよい．</p>
+  <ul>
+    <li><p>grep を動作させて，そのときの資源使用量を top と vmstat を使って計測，保存する．</p></li>
+    <li><p>資源使用量の記録から，gnuplot 形式のファイルに変換して，グラフを作成する．</p></li>
+  </ul>
+
+  <h3>資源使用量の測定</h3>
+<p> まず，grep コマンドを実行し，そのときの CPU 使用率，およびディスクアクセス量を top および vmstat で取得する．つまり，次のようなスクリプトを用意すればよい．</p>
+	  <div class="code">	 
+	    <pre>
+	      <code>
+     1	#!/bin/bash
+     2
+     3	# main
+     4	top -b -d 1 > cpu_usage.log &
+     5	vmstat 1 > disk_usage.log &
+     6	grep -r linux /usr/src/linux/ > /dev/null 2>&1 && pkill top; pkill vmstat; echo "fin"
+     7
+	      </code>
+	  </pre>
+	  </div>
+
+<p>&nbsp;&nbsp; top と vmstat の出力をそれぞれ cpu_usage.log と disk_usage.log にリダイレクトし，ファイルとして保存する．資源監視のプログラムが立ち上がったら，grep コマンドを起動する．今回は /usr/src/linux/(Linux のソースコード)の中から 'linux' という文字列を検索する．出力を /dev/null にリダイレクトし(何も出力させないことを意味する)，grep が終了したら，top と vmstat を終了させてスクリプトは終了する． </p>
+
+<h3>ログファイルから gnuplot 形式への変換スクリプト</h3>
+<p> top と vmstat で記録した資源使用量のログから gnuplot 形式のファイルへと変換する．gnuplot は，x 軸の要素と y 軸の要素がホワイトスペース(空白やタブ)で区切られていれば自動的に解釈してくれる．また，top と vmstat のログファイルのそれぞれ 9 エントリ目が CPU 使用率およびディスク読み込み量を指し示すため，それを抽出しながら，x 軸に経過時間をとるようファイルを生成すればよい．今回は以下の python スクリプトを用意した．</p>
+
+	  <center>
+	    <table>
+	      <tr>
+		<td>
+		  <b> top のログから CPU 使用率を抽出するスクリプト</b>
+		  <div class="code">
+		      <pre>
+		      <code>
+     1	#!/usr/bin/python
+     2
+     3	import sys, re
+     4
+     5	cpu_pos = 8
+     6
+     7	pt = re.compile("grep")
+     8
+     9	def cpu2gnup(filename):
+    10	    f = open(filename)
+    11	    count = 0
+    12
+    13	    for line in f.readlines():
+    14	        obj = pt.search(line)
+    15	        if (obj):
+    16	            ln = line.split()
+    17	            print "%d\t%s" % (count, ln[cpu_pos])
+    18	            count = count + 1
+    19	    print "%d\t0" % count
+    20
+    21	# main
+    22	cpu2gnup(sys.argv[1])
+		      </code>
+		    </pre>
+		  </div>
+		</td>
+		<td>
+		  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		</td>
+		<td>
+		  <b> vmstat のログからディスク読み込みを抽出するスクリプト</b>
+		  <div class="code">
+		    <pre>
+		      <code>
+     1	#!/usr/bin/python
+     2
+     3	import sys
+     4
+     5	data_list_len = 17
+     6	diskin_pos = 8
+     7
+     8	def disk2gnup(filename):
+     9	    f = open(filename)
+    10	    count = 0
+    11
+    12	    for line in f.readlines():
+    13	        ln = line.split()
+    14	        if (len(ln) == data_list_len):
+    15	            if (ln[diskin_pos].isdigit()):
+    16	                print "%d\t%f" % (count, float(ln[diskin_pos])/1024.0)
+    17	                count = count + 1
+    18	    print "%d\t0" % count
+    19
+    20	# main
+    21	disk2gnup(sys.argv[1])
+    22  
+		       </code>
+		    </pre>
+		  </div>
+		</td>
+	      </tr>
+	    </table>
+	  </center>
+
+	   <p>&nbsp;&nbsp; これらをスクリプトは標準出力に結果を出すので，適宜ファイルにリダイレクトする．</p>
+
+	  <div class="code">	 
+	  <pre>
+	    <code>
+ $ ./cpu2gnup.py cpu_usage.log > cpu_usage.dat
+ $ ./disk2gnup.py disk_usage.log > disk_usage.dat
+	    </code>
+	  </pre>
+	  </div>
+
+          <p>&nbsp;&nbsp; その後，gnuplot で上記 dat ファイルを読み込み，形を整えれば以下のグラフができあがる．これにより，目的を達成した．</p>
+
+	  <center>
+	    <table>
+	      <tr>
+		<td>
+		  <center>
+		  <b> grep の CPU 使用率</b><br>
+		  <img src="./cpu.png" width="100%">
+		  </center>
+		</td>
+		<td>
+		  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		</td>
+		<td>
+		  <center>
+		  <b> grep のディスク読み込み量</b>
+		  <img src="./disk.png" width="80%">			
+		  </center>
+		</td>
+	      </tr>
+	    </table>
+	  </center>
+
+	  <h2>まとめ</h2>
+	  <p>このように，シェルスクリプトを用いることで高度な処理を簡単に実現することができる．所望の機能を既存コマンドが有していたら，既存のコマンドを使えばよい．もし無い場合には，スクリプト言語でやはり手軽に実現できるのか，それとも C 言語を用いて細やかな処理まで指定して実現する必要があるのか，このあたりを入念に検討した上でプログラムを作っていくことで，生産性を飛躍的に向上できる．何でもかんでも人力でやるのではなく，コンピュータに任せられることはコンピュータに任せてしまおう．</p>
+	  
+
+</table>
+</body>
+</html>
