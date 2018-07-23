@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>第 13 回情報工学実験 2</title>
+    <link rel="stylesheet" type="text/css" href="./asg.css">
+  </head>
+  <body>
+    
+    <table align="center" width="1000px">
+
+      <tr><td>
+	  
+	  <h1>第 13 回情報工学実験 2</h1>
+	  
+	  <div>
+	    <p>本課題の目的は，オペレーティングシステムが提供するネットワーク通信の機能について学び，実際にそれらを使ってネットワークプログラミングを理解することにある．具体的には，Linux を題材に，プログラム同士が通信をするために必要なシステムコールを使ったプログラミングを行う．それだけでなく，簡易なサーバプログラムのコードを読み，それの拡張を施す．今日，我々のコンピュータはネットワーク通信とは切り離せない環境にある．本演習を通じて，スマートフォンや PC 上で動作するプログラムがどのように通信を行っているかを知ることができる．</p>
+	  </div>
+	  <br>
+	  <ul>
+	    <li class="index"><a class="index" href="index.html">説明(基本)</li>
+	    <li class="index">説明(応用)</a></li>
+	    <li class="index"><a class="index" href="slide.html">説明スライド</a></li>
+	    <li class="index"><a class="index" href="assignment.html">課題</a></li>
+	    <li class="index"><a class="index" href="submit.html">レポートの提出</a></li>
+	  </ul>
+	  <br><hr color="blue">
+
+	  
+	  <h2>サーバの並行処理</h2>
+          <p>これまでのサンプルプログラムは 1 クライアントを想定したものであった．クライアントのリクエストを受け付け，それを処理し，両プログラムとも終了する．そのため，複数のクライアントが同時にサーバに接続しても，その中から 1 つのクライアントのリクエストのみを処理するだけで，残りのクライアントはサーバへのリクエスト送信を失敗してしまう．複数のユーザが同時にインターネット上のサービスを利用することは当たり前である．特に，TCP 接続の場合には通信路を形成するため，それを維持しなければならない．そのため，サーバには複数クライアントからのリクエストを<b>TCP の通信路を維持しながら並行に</b>処理する機能が必須となる．</p>
+
+          <p>&nbsp;&nbsp; そこで今回は複数クライアントからのリクエストを並行的に処理をする手法として 2 つ取り上げる．1 つめは 1 スレッドで複数のリクエストを処理する方式，2 つめは複数のスレッドを用意してリクエストを処理する方式である．両者のイメージは次のとおりである．順に説明していく．
+	  </p>
+
+	  <center>
+	    <img src="./concurrent.png" width="75%">
+	  </center>
+
+
+	  <h3>1 スレッドで複数のリクエストを処理する方式</h3>
+          <p>1 スレッドで複数のリクエストを扱う場合には，クライアントからの接続がきたら，それらを 1 つずつ順番に処理をしていけばよい．それを効果的に実現できるシステムコールが<b>select()</b>である．この select() システムコールは，ファイルディスクリプタに対して入出力があったか否かを監視する．もし，監視しているファイルディスクリプタに変化があれば，select()はそれを通知してくれる．引数として監視したいファイルディスクリプタのセット(fd_set型)のポインタを受け取り，その場でブロックする．ファイルディスクリプタに変化が生じると，select() は返る．その際，引数で渡したファイルディスクリプタのセットの値が変更され，該当のファイルディスクリプタ番号に相当するビットが立つ．ファイルディスクリプタのセットを操作するマクロが sys/select.h 内に定義されているので適宜調べて使用することをおすすめする．</p>
+
+	  <p>&nbsp;&nbsp; 以下がサンプルコードである．クライアントは先に掲載した TCP のクライアントプログラム(sample-tcp-client.c)が使用可能である．ダウンロードは<a href="./sample3.c">こちら</a></p>
+	  <div class="code">	 
+	    <pre>
+	      <code>
+ 1	#include <stdio.h>
+ 2	#include <stdlib.h>
+ 3	#include <string.h>
+ 4	#include <errno.h>
+ 5
+ 6	#include <unistd.h>
+ 7	#include <netdb.h>
+ 8	#include <sys/socket.h>
+ 9	#include <sys/types.h>
+10	#include <netinet/in.h>
+11	#include <arpa/inet.h>
+12	#include <sys/select.h>
+13
+14	#define PORTNUM 8000
+15	#define BUFSIZE 4096
+16
+17	int main(void)
+18	{
+19		struct sockaddr_in saddr, caddr;
+20		int                fd1, fd2, ret, len;
+21		char               buf[BUFSIZE];
+22
+23		fd_set             fds, prev_fds;
+24
+25
+26		/* make server's socket */
+27		if ((fd1 = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
+28			perror("socket");
+29			return -1;
+30		}
+31
+32		memset(&saddr, 0, sizeof(saddr));
+33		saddr.sin_family      = AF_INET;
+34		saddr.sin_port        = htons(PORTNUM);
+35		saddr.sin_addr.s_addr = htonl(INADDR_ANY);
+36
+37		if(bind(fd1, (struct sockaddr*)&saddr, sizeof(saddr))) {
+38			perror("bind");
+39			return -1;
+40		}
+41
+42		if(listen(fd1, 5)) {
+43			perror("listen");
+44			return -1;
+45		}
+46
+47		FD_ZERO(&prev_fds);
+48		FD_SET(fd1, &prev_fds);
+49		fds = prev_fds;
+50		for (;;) {
+51			fds = prev_fds;
+52			if ((ret = select(FD_SETSIZE, &fds, 0, 0, 0)) <= 0) {
+53				perror("select");
+54				return -1;
+55			}
+56
+57			if (FD_ISSET(fd1, &fds)) {
+58				if((fd2 = accept(fd1, (struct sockaddr*)&caddr, &len)) < 0) {
+59					perror("accept");
+60					exit(1);
+61				}
+62				FD_SET(fd2, &prev_fds);
+63				continue;
+64			}
+65
+66			if (FD_ISSET(fd2, &fds)) {
+67				if ((ret = recv(fd2, buf, BUFSIZE, 0)) > 0) {
+68					write(1,buf,ret);
+69				}
+70				close(fd2);
+71				FD_CLR(fd2, &prev_fds);
+72			}
+73		}
+74		close(fd1);
+75
+76		return 0;
+77	}
+	      </code>
+	  </pre>
+	  </div>
+
+	  <h3>複数スレッドでリクエストを処理する方式</h3>
+          <p> こちらはいくぶん直感的である．クライアントからの接続がきたらスレッドを生成して，その後の処理をスレッドに任せる方式である．具体的には，1 つのスレッド(メインスレッド)が接続を待ち，接続を確立したらスレッド(ワーカスレッド)を生成する．メインスレッドは再び接続を待つ一方で，生成されたワーカスレッドは同時にクライアントからの処理を行う．
+          </p>
+
+	  <p>&nbsp;&nbsp; 以下がサンプルコードである．クライアントは先に掲載した TCP のクライアントプログラム(sample-tcp-client.c)が使用可能である．ダウンロードは<a href="./sample-threads.c">こちら</a></p>
+	  <div class="code">	 
+	    <pre>
+	      <code>
+ 1	#include <stdio.h>
+ 2	#include <stdlib.h>
+ 3	#include <string.h>
+ 4	#include <errno.h>
+ 5
+ 6	#include <unistd.h>
+ 7	#include <netdb.h>
+ 8	#include <sys/socket.h>
+ 9	#include <sys/types.h>
+10	#include <netinet/in.h>
+11	#include <arpa/inet.h>
+12	#include <pthread.h>
+13
+14	#define PORTNUM 8000
+15	#define BUFSIZE 4096
+16
+17	void *recv_and_resp(int *fd_socket)
+18	{
+19		int  fd, ret;
+20		char buf[BUFSIZE];
+21		fd = (int)*fd_socket;
+22
+23		if ((ret = recv(fd, buf, BUFSIZE, 0)) > 0) {
+24			write(1,buf,ret);
+25		}
+26		close(fd);
+27	}
+28
+29	int main(void)
+30	{
+31		struct sockaddr_in saddr, caddr;
+32		int                fd1, fd2, ret, len;
+33		pthread_t          pt;
+34
+35		/* make server's socket */
+36		if ((fd1 = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
+37			perror("socket");
+38			return -1;
+39		}
+40
+41		memset(&saddr, 0, sizeof(saddr));
+42		saddr.sin_family      = AF_INET;
+43		saddr.sin_port        = htons(PORTNUM);
+44		saddr.sin_addr.s_addr = htonl(INADDR_ANY);
+45
+46		if(bind(fd1, (struct sockaddr*)&saddr, sizeof(saddr))) {
+47			perror("bind");
+48			return -1;
+49		}
+50
+51		if(listen(fd1, 5)) {
+52			perror("listen");
+53			return -1;
+54		}
+55
+56		for (;;) {
+57			if((fd2 = accept(fd1, (struct sockaddr*)&caddr, &len)) < 0) {
+58				perror("accept");
+59				exit(1);
+60			}
+61
+62			if (pthread_create(&pt, NULL, (void*)(recv_and_resp), (void*)&fd2) < 0) {
+63				perror("pthread_create");
+64				return -1;
+65			}
+66			pthread_detach(pt);
+67		}
+68
+69		return 0;
+70	}
+
+	      </code>
+	  </pre>
+	  </div>
+
+</table>
+</body>
+</html>
