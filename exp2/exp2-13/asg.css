@@ -1,7 +1,7 @@
 li.index {
     display:inline;
     font-family: Hiragino, Meiryo, sans-serif;
-    margin:27px;
+    margin:45px;
     width: 10px;
 /*    padding: 20px 20px 20px 20px;*/
     height: 10px;
@@ -85,8 +85,7 @@ span.awardname {
 }
 
 div.code {
-    background-color: #f0f0f0;
-    font-family: Ricty;
+    background-color: #f0f0f0
 }
 
 p {

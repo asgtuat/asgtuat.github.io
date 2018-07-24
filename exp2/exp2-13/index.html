@@ -78,8 +78,7 @@
 	  <br>
 	  
 	  <h2>通信路の種類</h2>
-	  <p>通信路には代表的な 2 つの種類が存在する．<b>User Datagram Protocol(UDP)</b>と<b>Transfer Control Protocol(TCP)</b>である．これらは OS(の中のプロトコルスタック)によって提供される機能であり，相反する性質を持ち，用途に応じて使い分けるのがよしとされている．端的に言うと，UDP はシステム側で何もしない，TCP はシステム側でたくさんのことをする．具体的には，UDP はコネクションレス(connection less)型の通信に分類され，ネットワーク上におけるメッセージのロス等については何も保証しない通信路である(データグラム型と呼ぶ)．プロセス間同士がメッセージを投げ合うイメージである．一方，TCP はコネクション型の通信に分類され，ネットワーク上におけるメッセージの配送を保証する通信路である(ストリーム型と呼ぶ)．こちらは UDP と異なり，プロセス間同士が通信路を確立し，安定した状態でメッセージのやりとりをするイメージである．これらはソケットを作成するときに指定する．詳しくは socket() のマニュアルを参照されたい．一般的には，通信の信頼性から TCP の方が広く利用されている．
-	  </p>
+	  <p>通信路には代表的な 2 つの種類が存在する．<b>User Datagram Protocol(UDP)</b>と<b>Transfer Control Protocol(TCP)</b>である．これらは OS(の中のプロトコルスタック)によって提供される機能であり，相反する性質を持ち，用途に応じて使い分けるのがよしとされている．端的に言うと，UDP はシステム側で何もしない，TCP はシステム側でたくさんのことをする．具体的には，UDP はコネクションレス(connection less)型の通信に分類され，ネットワーク上におけるメッセージのロス等については何も保証しない通信路である(データグラム型と呼ぶ)．プロセス間同士がメッセージを投げ合うイメージである．一方，TCP はコネクション型の通信に分類され，ネットワーク上におけるメッセージの配送を保証する通信路である(ストリーム型と呼ぶ)．こちらは UDP と異なり，プロセス間同士が通信路を確立し，安定した状態でメッセージのやりとりをするイメージである．これらはソケットを作成するときに指定する．詳しくは socket() のマニュアルを参照されたい．一般的には，通信の信頼性から TCP の方が広く利用されている． </p>
 
 	  <center>
 	    <img src="./udp-tcp.png" width="70%">
@@ -205,12 +204,7 @@
 39		close(fd);
 40		return 0;
 41	}
-
-
-
-
-
-		  </code>
+  	          </code>
 		    </pre>
 		  </div>
 		</td>
@@ -222,6 +216,7 @@
 	  
 	  <h3>UDP のサンプルプログラム</h3>
 	  <p>以下がサンプルコードである．左側がサーバ，右側がクライアントのプログラムであり，同様に同じ物理マシンにサーバ，クライアントの順で起動すれば稼働する．ダウンロードはこちら(<a href="./sample-udp-server.c">サーバ</a>，<a href="sample-udp-client.c">クライアント</a>)．</p>
+
 	  <center>
 	    <table>
 	      <tr>
@@ -229,52 +224,52 @@
 		  <div class="code">
 		    <pre>
 		      <code>
-     1	#include &ltstdio.h&gt
-     2	#include &ltstdlib.h&gt
-     3	#include &ltstring.h&gt
-     4	#include &lterrno.h&gt
-     5
-     6	#include &ltunistd.h&gt
-     7	#include &ltnetdb.h&gt
-     8	#include &ltsys/socket.h&gt
-     9	#include &ltsys/types.h&gt
-    10	#include &ltnetinet/in.h&gt
-    11	#include &ltarpa/inet.h&gt
-    12
-    13	#define PORTNUM 8000
-    14	#define BUFSIZE 4096
-    15
-    16	int main(void)
-    17	{
-    18		struct sockaddr_in saddr, caddr;
-    19		int                fd1, ret, len;
-    20		char               buf[BUFSIZE];
-    21
-    22		/* make server's socket */
-    23		if ((fd1 = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
-    24			perror("socket");
-    25			return -1;
-    26		}
-    27
-    28		memset(&saddr, 0, sizeof(saddr));
-    29		saddr.sin_family      = AF_INET;
-    30		saddr.sin_port        = htons(PORTNUM);
-    31		saddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    32
-    33		if(bind(fd1, (struct sockaddr*)&saddr, sizeof(saddr))) {
-    34			perror("bind");
-    35			return -1;
-    36		}
-    37
-    38		if ((ret = recvfrom(fd1, buf, BUFSIZE, 0,
-    39				    (struct sockaddr*)&caddr, &len)) > 0) {
-    40			write(1,buf,ret);
-    41		}
-    42
-    43		close(fd1);
-    44
-    45		return 0;
-    46	}
+ 1	#include &ltstdio.h&gt
+ 2	#include &ltstdlib.h&gt
+ 3	#include &ltstring.h&gt
+ 4	#include &lterrno.h&gt
+ 5
+ 6	#include &ltunistd.h&gt
+ 7	#include &ltnetdb.h&gt
+ 8	#include &ltsys/socket.h&gt
+ 9	#include &ltsys/types.h&gt
+10	#include &ltnetinet/in.h&gt
+11	#include &ltarpa/inet.h&gt
+12
+13	#define PORTNUM 8000
+14	#define BUFSIZE 4096
+15
+16	int main(void)
+17	{
+18		struct sockaddr_in saddr, caddr;
+19		int        fd1, ret, len;
+20		char               buf[BUFSIZE];
+21
+22		/* make server's socket */
+23		if ((fd1 = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
+24			perror("socket");
+25			return -1;
+26		}
+27
+28		memset(&saddr, 0, sizeof(saddr));
+29		saddr.sin_family      = AF_INET;
+30		saddr.sin_port        = htons(PORTNUM);
+31		saddr.sin_addr.s_addr = htonl(INADDR_ANY);
+32
+33		if(bind(fd1, (struct sockaddr*)&saddr, sizeof(saddr))) {
+34			perror("bind");
+35			return -1;
+36		}
+37
+38		if ((ret = recvfrom(fd1, buf, BUFSIZE, 0,
+39				    (struct sockaddr*)&caddr, &len)) > 0) {
+40			write(1,buf,ret);
+41		}
+42
+43		close(fd1);
+44
+45		return 0;
+46	}
 		      </code>
 		    </pre>
 		  </div>
@@ -283,49 +278,50 @@
 		  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		</td>
 		<td>
+
 		  <div class="code">
 		    <pre>
 		      <code>
-     1	#include &ltstdio.h&gt
-     2	#include &ltstdlib.h&gt
-     3	#include &ltstring.h&gt
-     4	#include &lterrno.h&gt
-     5
-     6	#include &ltunistd.h&gt
-     7	#include &ltnetdb.h&gt
-     8	#include &ltsys/socket.h&gt
-     9	#include &ltsys/types.h&gt
-    10	#include &ltnetinet/in.h&gt
-    11	#include &ltarpa/inet.h&gt
-    12
-    13	#define PORTNUM 8000
-    14
-    15	int main(int argc, char **argv)
-    16	{
-    17		struct sockaddr_in saddr;
-    18		int                fd;
-    19		char               *buf="Hello, Socket Programming\n";
-    20
-    21		/* make server's socket */
-    22		if((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
-    23			perror("socket");
-    24			return -1;
-    25		}
-    26
-    27		memset(&saddr, 0, sizeof(saddr));
-    28		saddr.sin_family      = AF_INET;
-    29		saddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    30		saddr.sin_port        = htons(PORTNUM);
-    31
-    32		sendto(fd, buf, strlen(buf), 0,
-    33		       (struct sockaddr*)&saddr, sizeof(saddr));
-    34
-    35		close(fd);
-    36		return 0;
-    37	}
+ 1	#include &ltstdio.h&gt
+ 2	#include &ltstdlib.h&gt
+ 3	#include &ltstring.h&gt
+ 4	#include &lterrno.h&gt
+ 5
+ 6	#include &ltunistd.h&gt
+ 7	#include &ltnetdb.h&gt
+ 8	#include &ltsys/socket.h&gt
+ 9	#include &ltsys/types.h&gt
+10	#include &ltnetinet/in.h&gt
+11	#include &ltarpa/inet.h&gt
+12
+13	#define PORTNUM 8000
+14
+15	int main(int argc, char **argv)
+16	{
+17		struct sockaddr_in saddr;
+18		int                fd;
+19		char               *buf="Hello, Socket Programming\n";
+20
+21		/* make server's socket */
+22		if((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
+23			perror("socket");
+24			return -1;
+25		}
+26
+27		memset(&saddr, 0, sizeof(saddr));
+28		saddr.sin_family      = AF_INET;
+29		saddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+30		saddr.sin_port    = htons(PORTNUM);
+31
+32		sendto(fd, buf, strlen(buf), 0,
+33		   (struct sockaddr*)&saddr, sizeof(saddr));
+34
+35		close(fd);
+36		return 0;
+37	}
 
-		  </code>
-		</pre>
+								     </code>
+		    </pre>
 		  </div>
 		</td>
 	      </tr>
