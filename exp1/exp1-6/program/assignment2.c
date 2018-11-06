@@ -2,24 +2,36 @@
 
 int *foo()
 {
-	int a = 10;
+	int a, b;
+	a = 10;
 	return &a;
 }
 
-int bar()
+int *bar()
 {
-	int a = 800;
-	return a;
+	int a, b;
+	b = 20;
+	return &b;
+}
+
+int baz()
+{
+	int a, b;
+	a = 80;
+	b = 90;
+	return 0;
 }
 
 int main()
 {
-	int *p, q;
+	int *p, *q, r;
 
 	p = foo();
-	printf("*p = %d\n", *p);
 	q = bar();
-	printf("*p = %d\n", *p);
+	printf("*p = %d, *q = %d\n", *p, *q);
+
+	r = baz();
+	printf("*p = %d, *q = %d\n", *p, *q);
 
 	return 0;
 }
