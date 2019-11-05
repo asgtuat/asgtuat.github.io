@@ -74,14 +74,14 @@
   2
   3	int *foo()
   4	{
-  5		int a, b;
+  5		volatile int a, b;
   6		a = 10;
   7		return &a;
   8	}
   9
  10	int *bar()
  11	{
- 12		int a, b;
+ 12		volatile int a, b;
  13		b = 20;
  14		return &b;
  15	}

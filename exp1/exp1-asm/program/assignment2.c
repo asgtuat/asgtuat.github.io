@@ -2,14 +2,14 @@
 
 int *foo()
 {
-	int a, b;
+	volatile int a, b;
 	a = 10;
 	return &a;
 }
 
 int *bar()
 {
-	int a, b;
+	volatile int a, b;
 	b = 20;
 	return &b;
 }
