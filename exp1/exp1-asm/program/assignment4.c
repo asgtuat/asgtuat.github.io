@@ -1,8 +1,8 @@
 int main()
 {
-	int a[4], i;
+	int i, a[4];
 	
-	for (i = 0; i < 8; i++)
+	for (i = 0; i < 7; i++)
 		a[i] = 0;
 
 	return 0;
