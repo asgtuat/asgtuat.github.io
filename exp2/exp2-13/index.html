@@ -138,20 +138,21 @@
 40			return -1;
 41		}
 42
-43		if((fd2 = accept(fd1, (struct sockaddr*) &caddr, &len)) < 0) {
-44			perror("accept");
-45			exit(1);
-46		}
-47
-48		if ((ret = recv(fd2, buf, BUFSIZE, 0)) > 0) {
-49			write(1,buf,ret);
-50		}
-51
-52		close(fd2);
-53		close(fd1);
-54
-55		return 0;
-56	}
+43              len = sizeof(caddr);
+44		if((fd2 = accept(fd1, (struct sockaddr*) &caddr, &len)) < 0) {
+45			perror("accept");
+46			exit(1);
+47		}
+48
+49		if ((ret = recv(fd2, buf, BUFSIZE, 0)) > 0) {
+50			write(1,buf,ret);
+51		}
+52
+53		close(fd2);
+54		close(fd1);
+55
+56		return 0;
+57	}
   		</code>
 		    </pre>
 		  </div>

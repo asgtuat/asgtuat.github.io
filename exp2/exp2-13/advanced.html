@@ -102,26 +102,27 @@
 55			}
 56
 57			if (FD_ISSET(fd1, &fds)) {
-58				if((fd2 = accept(fd1, (struct sockaddr*)&caddr, &len)) < 0) {
-59					perror("accept");
-60					exit(1);
-61				}
-62				FD_SET(fd2, &prev_fds);
-63				continue;
-64			}
-65
-66			if (FD_ISSET(fd2, &fds)) {
-67				if ((ret = recv(fd2, buf, BUFSIZE, 0)) > 0) {
-68					write(1,buf,ret);
-69				}
-70				close(fd2);
-71				FD_CLR(fd2, &prev_fds);
-72			}
-73		}
-74		close(fd1);
-75
-76		return 0;
-77	}
+58				len = sizeof(caddr);
+59				if((fd2 = accept(fd1, (struct sockaddr*)&caddr, &len)) < 0) {
+60					perror("accept");
+61					exit(1);
+62				}
+63				FD_SET(fd2, &prev_fds);
+64				continue;
+65			}
+66
+67			if (FD_ISSET(fd2, &fds)) {
+68				if ((ret = recv(fd2, buf, BUFSIZE, 0)) > 0) {
+69					write(1,buf,ret);
+70				}
+71				close(fd2);
+72				FD_CLR(fd2, &prev_fds);
+73			}
+74		}
+75		close(fd1);
+76
+77		return 0;
+78	}
 	      </code>
 	  </pre>
 	  </div>
@@ -190,20 +191,21 @@
 54		}
 55
 56		for (;;) {
-57			if((fd2 = accept(fd1, (struct sockaddr*)&caddr, &len)) < 0) {
-58				perror("accept");
-59				exit(1);
-60			}
-61
-62			if (pthread_create(&pt, NULL, (void*)(recv_and_resp), (void*)&fd2) < 0) {
-63				perror("pthread_create");
-64				return -1;
-65			}
-66			pthread_detach(pt);
-67		}
-68
-69		return 0;
-70	}
+57			len = sizeof(caddr);
+58			if((fd2 = accept(fd1, (struct sockaddr*)&caddr, &len)) < 0) {
+59				perror("accept");
+60				exit(1);
+61			}
+62
+63			if (pthread_create(&pt, NULL, (void*)(recv_and_resp), (void*)&fd2) < 0) {
+64				perror("pthread_create");
+65				return -1;
+66			}
+67			pthread_detach(pt);
+68		}
+69
+70		return 0;
+71	}
 
 	      </code>
 	  </pre>

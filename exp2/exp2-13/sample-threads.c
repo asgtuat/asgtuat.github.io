@@ -54,6 +54,7 @@ int main(void)
 	}
 
 	for (;;) {
+		len = sizeof(caddr);
 		if((fd2 = accept(fd1, (struct sockaddr*)&caddr, &len)) < 0) {
 			perror("accept");
 			exit(1);
