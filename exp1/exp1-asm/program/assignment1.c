@@ -1,14 +1,13 @@
 #include <stdio.h>
 
-int comb(int n, int r)
+int fibonacci(int a)
 {
 	int ret;
-	
-	if (n == 0) ret = 1;
-	else if (r == 1) ret = n;
-	else if (r == 0 || n == r) ret = 1;
-	else ret = comb(n-1, r-1) + comb(n-1, r);
 
+	if (a == 0)      ret = 0;
+	else if (a == 1) ret = 1;
+	else             ret = fibonacci(a - 2) + fibonacci(a - 1);
+	
 	return ret;
 }
 
@@ -16,8 +15,8 @@ int main()
 {
 	int a;
 
-	a = comb(4,2);
-	printf("a = %d\n", a);
-
+	a = fibonacci(6);
+	printf("%d\n", a);
+		
 	return 0;
 }
