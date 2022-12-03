@@ -38,7 +38,7 @@ _main:                                  ## @main
 	movq	%rsp, %rbp
 	subq	$16, %rsp
 	movl	$0, -4(%rbp)
-	movl	$6, %edi
+	movl	$4, %edi
 	callq	_fibonacci
 	movl	%eax, -8(%rbp)
 	movl	-8(%rbp), %esi

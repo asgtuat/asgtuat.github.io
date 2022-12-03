@@ -15,7 +15,7 @@ int main()
 {
 	int a;
 
-	a = fibonacci(6);
+	a = fibonacci(4);
 	printf("%d\n", a);
 		
 	return 0;
