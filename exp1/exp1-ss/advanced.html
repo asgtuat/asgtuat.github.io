@@ -76,28 +76,28 @@
 		  <div class="code">
 		      <pre>
 		      <code>
-     1	#!/usr/bin/python
+     1  #!/usr/bin/python
      2
-     3	import sys, re
+     3  import sys, re
      4
-     5	cpu_pos = 8
+     5  cpu_pos = 8
      6
-     7	pt = re.compile("grep")
+     7  pt = re.compile("grep")
      8
-     9	def cpu2gnup(filename):
-    10	    f = open(filename)
-    11	    count = 0
+     9  def cpu2gnup(filename):
+    10     f = open(filename)
+    11     count = 0
     12
-    13	    for line in f.readlines():
-    14	        obj = pt.search(line)
-    15	        if (obj):
-    16	            ln = line.split()
-    17	            print "%d\t%s" % (count, ln[cpu_pos])
-    18	            count = count + 1
-    19	    print "%d\t0" % count
+    13     for line in f.readlines():
+    14        obj = pt.search(line)
+    15        if (obj):
+    16            ln = line.split()
+    17            print "%d\t%s" % (count, ln[cpu_pos])
+    18            count = count + 1
+    19     print "%d\t0" % count
     20
-    21	# main
-    22	cpu2gnup(sys.argv[1])
+    21  # main
+    22  cpu2gnup(sys.argv[1])
 		      </code>
 		    </pre>
 		  </div>
@@ -110,28 +110,28 @@
 		  <div class="code">
 		    <pre>
 		      <code>
-     1	#!/usr/bin/python
+     1  #!/usr/bin/python
      2
-     3	import sys
+     3  import sys
      4
-     5	data_list_len = 17
-     6	diskin_pos = 8
+     5  data_list_len = 17
+     6  diskin_pos = 8
      7
-     8	def disk2gnup(filename):
-     9	    f = open(filename)
-    10	    count = 0
+     8  def disk2gnup(filename):
+     9     f = open(filename)
+    10     count = 0
     11
-    12	    for line in f.readlines():
-    13	        ln = line.split()
-    14	        if (len(ln) == data_list_len):
-    15	            if (ln[diskin_pos].isdigit()):
-    16	                print "%d\t%f" % (count, float(ln[diskin_pos])/1024.0)
-    17	                count = count + 1
-    18	    print "%d\t0" % count
+    12     for line in f.readlines():
+    13        ln = line.split()
+    14           if (len(ln) == data_list_len):
+    15              if (ln[diskin_pos].isdigit()):
+    16                 print "%d\t%f" % (count, float(ln[diskin_pos])/1024.0)
+    17                 count = count + 1
+    18     print "%d\t0" % count
     19
-    20	# main
-    21	disk2gnup(sys.argv[1])
-    22  
+    20  # main
+    21  disk2gnup(sys.argv[1])
+      
 		       </code>
 		    </pre>
 		  </div>
