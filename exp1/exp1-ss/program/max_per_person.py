@@ -18,7 +18,7 @@ def max_per_person(filename):
             country = ln[country_pos]
             max     = float(ln[per_person_pos])
 
-    print "%s" % country
+    print(country)
         
 # main
 max_per_person(sys.argv[1])
