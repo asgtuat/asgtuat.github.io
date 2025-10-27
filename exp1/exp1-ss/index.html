@@ -36,7 +36,7 @@
 
 	  <p>&nbsp;&nbsp; 以降にシェルスクリプトの記述について述べていく．文法等に関しては，これまでに体得したプログラミング言語と変わらないことがわかる．</p>
 	  <h2>変数と算術演算</h2>
-	 <p>Python と同様，型を定義しなくとも変数を宣言できる．変数の値を使いたいときには <b>"$"</b>で修飾する．また，変数や数値と演算子の間にはスペースを入れないのが原則となる．以下がそれぞれの例である．</p>
+	  <p>Python と同様，型を定義しなくとも変数を宣言できる．変数の値を使いたいときには <b>"$"</b>で修飾する．また，変数や数値と演算子の間にはスペースを入れないのが原則となる．以下がそれぞれの例である．</p>
 
 	  <center>
 	    <table>
@@ -94,12 +94,12 @@
 18	
 		  </code>
 		</pre>
-</div>
-	      </td>
-	    </tr>
-	  </table>
+		  </div>
+		</td>
+	      </tr>
+	    </table>
 	  </center>
-
+	  
 	  <p>&nbsp;&nbsp; bash と tcsh の大きな違いは代入にある．tcsh では <b>set</b> を頭につけて代入を表現する．両者ともにであるが，演算の仕方にも注意して欲しい．これまでと同様に算術演算をするときに素直に記述すると，算術演算の式を文字列とみなして代入が行われる(両者11行目)．この場合，${a} + ${b} を素直に記述すると，c には "1+2"という文字列が代入される．演算を行いたいときには，bash は<b> expr </b>コマンドを使ってその結果を代入する，tcsh は set の代わりに<b> @ </b>を使えば，演算結果を取得できる．コマンドの結果を代入したいときには，<b>`</b>でコマンドを囲えばその結果を取得することができる．bash の算術演算は expr コマンドの結果を代入しているに過ぎないため，tcsh においても同様の方法で算術演算および代入が可能である．</p>
 
 	  <p>算術演算には，これまで通りのものが使えると思えばよい．+, -, *, /, ++, --, %, +=, -=, *=, /=, %= など，一通りのものが使える．適宜，必要になったら，自分で調べながら確認していくとよい．</p>
@@ -120,16 +120,16 @@
  2
  3 a=A
  4 b="A"
- 5	
+ 5
  6 if [ ${a} = ${b} ]; then
  7     echo "a = b"
  8 else
  9     echo "a != b"
 10 fi
-11	
+11
 12 a=10
 13 b=2
-14	
+14
 15 if [ ${a} -lt ${b} ]; then
 16     echo "a < b"
 17 else
@@ -147,19 +147,19 @@
 		    <pre>
 		      <code>
  1 #!/bin/tcsh
- 2	
+ 2
  3 set a=A
  4 set b="A"
- 5	
+ 5
  6 if(${a} == ${b}) then
  7     echo "a = b"
  8 else
  9     echo "a != b"
 10 endif
-11	
+11
 12 set a=10
 13 set b=2
-14	
+14
 15 if(${a} < ${b}) then
 16     echo "a < b"
 17 else
@@ -235,14 +235,14 @@
 		    <pre>
 		      <code>
  1 #!/bin/bash
- 2	
+ 2
  3 i=0
  4 while [ ${i} -lt 10 ]
  5 do
  6     echo $i
- 7     i=`expr $i + 1` 
+ 7     i=`expr $i + 1`
  8 done
- 9	
+ 9
 10 array="one three five seven nine"
 11 for i in $array;
 12 do
@@ -260,18 +260,18 @@
 		    <pre>
 		      <code>
  1 #!/bin/tcsh
- 2	
+ 2
  3 set i=0
  4 while ( ${i} < 10 )
  5     echo $i
  6     @ i= $i + 1
  7 end
- 8	
+ 8
  9 set array=(one three five seven nine)
 10     foreach i ($array)
 11     echo $i
 12 end
-13	
+13
 14
 		       </code>
 		    </pre>
@@ -296,7 +296,7 @@
 		    <pre>
 		      <code>
  1 #!/bin/bash
- 2	
+ 2
  3 echo "args num.: ${#}"
  4 echo "cmd: ${0}"
  5 echo "args: ${@}"
@@ -312,7 +312,7 @@
 		    <pre>
 		      <code>
  1 #!/bin/tcsh
- 2	
+ 2
  3 echo "args num.: ${#}"
  4 echo "cmd: ${0}"
  5 echo "args: ${*}"
@@ -335,15 +335,15 @@
 		    <pre>
 		      <code>
  1 #!/bin/bash
- 2	
+ 2
  3 func() {
  4     if [ ${#} -gt 1 ]; then
- 5         echo $@ 
+ 5         echo $@
  6     else
  7         echo "No args.."
  8     fi
  9 }
-10	
+10
 11 # main
 12 ret=`func ${@}`
 13 echo $ret
@@ -359,7 +359,7 @@
 		    <pre>
 		      <code>
  1 #!/bin/tcsh
- 2	
+ 2
  3 echo ${#}
  4 if(${#} > 0) then
  5     echo ${*}
@@ -369,7 +369,7 @@
 
 
  1 #!/bin/tcsh
- 2	
+ 2
  3 set ret=`./func.sh ${*}`
  4 echo $ret
 		       </code>
@@ -390,25 +390,23 @@
 	  </p>
 
 	  <p>&nbsp;&nbsp; 以下に例を示す．リダイレクトの記述はシェルの種類によらず，同一である．</p>
+	  <div class="code">
+	    <pre>
+	      <code>
+ $ grep -r linux /usr/src/linux/* > grep_linux.txt # linux のソースツリーから linux という文字を抜き出して grep_linux.txt に保存．
+ $ cat -n test.c > test-n.txt # test.c の中身に行番号をつけ，その内容を test-n.txt に保存．
+ $ sort < word.txt > word-sorted.txt # word.txt の内容を sort して，その出力を word-sorted.txt に保存．
+	      </code>
+	     </pre>
+	   </div>
+	 <p>&nbsp;&nbsp;上記のリダイレクトであるが，厳密には，> は上記の記述は標準出力 1 に対して，< は標準入力(0)に対してその入出力をリダイレクトしている．各プログラムは起動すると，0:標準入力(stdin)，1:標準出力(stdout)，そして 2:標準エラー出力(stderr)が割り当てられる．もし，これらを厳密に指示したければ，番号を指定することもできる．たとえば，grep の標準エラー出力の結果をファイルに保存したければ，リダイレクトの > 部分に<b> 2> </b>として指定することができる．また，標準エラー出力と標準出力を同じファイルにリダイレクトしたい場合には文末に<b>2>&1</b>とすればよい．他にも様々な記述方法がある．たとえば，以下のような形である．</p>
 
-	  <div class="code">	 
+	  <div class="code">
 	  <pre>
 	    <code>
- $ grep -r linux /usr/src/linux/* > grep_linux.txt # linux のソースツリーから linux という文字を抜き出し，結果を grep_linux.txt に保存する
- $ cat -n test.c > test-n.txt # test.c の中身に行番号をつけ，その内容を test-n.txt に保存する
- $ sort < word.txt > word-sorted.txt # word.txt の内容を sort して，その出力を word-sorted.txt に保存する．(sort コマンドをうまくつかえばリダイレクトは不要だけど・・・)
-	    </code>
-	  </pre>
-	  </div>
-
-	 <p>&nbsp;&nbsp;上記のリダイレクトであるが，厳密には，> は上記の記述は標準出力 1 に対して，< は標準入力(0)に対してその入出力をリダイレクトしている．各プログラムは起動すると，0:標準入力(stdin)，1:標準出力(stdout)，そして 2:標準エラー出力(stderr)が割り当てられる．もし，これらを厳密に指示したければ，番号を指定することもできる．たとえば，grep の標準エラー出力の結果をファイルに保存したければ，リダイレクトの > 部分に<b> 2> </b>として指定することができる．また，標準エラー出力と標準出力を同じファイルにリダイレクトしたい場合には文末に<b>2>&1</b>とすればよい．他にも様々な記述方法がある．たとえば，以下のような形である．
-	 </p>
-	  <div class="code">	 
-	  <pre>
-	    <code>
- $ grep -r linux /usr/src/linux/* 2> grep_linux_error.txt #  標準エラー出力を grep_linux_error.txt に．
+ $ grep -r linux /usr/src/linux/* 2> grep_linux.txt #  標準エラー出力を grep_linux.txt に．
  $ grep -r linux /usr/src/linux/* >> grep_linux_error.txt #  標準出力を grep_linux_error.txt に追記する．
- $ grep -r linux /usr/src/linux/* 1> grep_linux.txt 2> grep_linux_error.txt # 標準出力を grep_linux.txt に，標準エラー出力を grep_linux_error.txt に．
+ $ grep -r linux /usr/src/linux/* 1> grep_linux.txt 2> grep_linux_error.txt # 上記を一気に．
  $ grep -r linux /usr/src/linux/* > grep_linux.txt 2>&1 # 全出力まるごと grep_linux.txt に
  $ grep -r linux /usr/src/linux/* &> grep_linux.txt # 全出力まるごと grep_linux.txt に　(上といっしょ)
 	    </code>
@@ -416,8 +414,8 @@
 	  </div>
 
 	  <h2>パイプ</h2>
-	  <b>パイプ</b>では，コマンドの出力を別のコマンドの入力として渡すことができる．これにより複数コマンドを組み合わせたパワフルな処理が可能となる．たとえば，今いるディレクトのファイルの中で，.txt という拡張子のファイルがいくつあるか，今稼働しているプログラムの中から，自分の立ち上げたものの中で test という名前のものはあるか，といった処理を記述することができる．最初はなれないかもしれないが，パイプを活用することで，高度な処理をすることができるので，ぜひとも活用していただきたい．</p>
-	  <div class="code">	 
+	  <p><b>パイプ</b>では，コマンドの出力を別のコマンドの入力として渡すことができる．これにより複数コマンドを組み合わせたパワフルな処理が可能となる．たとえば，今いるディレクトのファイルの中で，.txt という拡張子のファイルがいくつあるか，今稼働しているプログラムの中から，自分の立ち上げたものの中で test という名前のものはあるか，といった処理を記述することができる．最初はなれないかもしれないが，パイプを活用することで，高度な処理をすることができるので，ぜひとも活用していただきたい．</p>
+	  <div class="code">
 	  <pre>
 	    <code>
  $ ps aux | grep yamada | grep test # 稼働しているプログラムの中から，yamada と test という文字列を同時に含むステータスのプログラムを表示する
@@ -429,7 +427,7 @@
 
 	  <h2>コマンドの実行制御</h2>
 <p>コマンドを連続して呼び出し，一つ前の挙動に応じて，その処理を変更することができる．具体的には <b>&&</b> や <b>||</b> といった記号を用いればそのような動作を記述できる．<b>&&</b> は，左辺のコマンド実行が成功したら右辺のコマンドを実行し，<b>||</b> は左辺のコマンドが失敗したら右辺のコマンドを実行する．また，複数のコマンドをまとめて実行することができる．<b>()</b>でくくれば，それを一つのコマンドとしてみなされる．内部のコマンドを <b>;</b> で区切り，連続して記述する．</p>
-	  <div class="code">	 
+	  <div class="code">
 	  <pre>
 	    <code>
  $ mkdir foo && mkdir foo/bar # foo というディレクトを作成する．成功したら，その下に bar というディレクトリを作成する
@@ -440,6 +438,7 @@
 	  </div>
 
          <p>&nbsp;&nbsp; なおここで紹介した機能はシェルスクリプトの基本にすぎない．他にも様々な機能があるため(<b>{}</b> によるグルーピングなど)自分で調べてより高度なシェルスクリプトを記述してもらいたい．</p>
+
 </table>
 </body>
 </html>

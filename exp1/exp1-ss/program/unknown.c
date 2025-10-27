@@ -6,12 +6,16 @@ void hash(int a)
 	int calc = 0;
 
 	calc += a;
-	calc += (calc << 10);
+	calc += (calc << 9);
 	calc ^= (calc >> 6);
 
-	calc += calc<<3;
-	calc ^= calc<<11;
-	calc += calc<<15;
+	calc += (calc << 4);
+	calc ^= (calc << 20);
+	calc += (calc << 25);
+
+	calc ^= (calc << 11);
+	calc ^= (calc << 19);
+	calc += (calc << 17);
 
 	printf("%d\n", calc);
 }
