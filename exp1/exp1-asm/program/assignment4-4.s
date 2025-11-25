@@ -26,7 +26,7 @@ main:
 	subq	$16, %rsp
 	movl	$1080, %esi
 	movl	$1920, %edi
-	call	gcd
+	call	func
 	movl	%eax, -4(%rbp)
 	movl	$0, %eax
 	leave
